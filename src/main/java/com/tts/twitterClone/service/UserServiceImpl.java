@@ -7,11 +7,13 @@ import com.tts.twitterClone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService{
 
     private UserRepository userRepository;
@@ -31,7 +33,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User findByUsername(String username) {
-        return userRepository.findByUserName(username);
+        return userRepository.findByUsername(username);
     }
 
     @Override

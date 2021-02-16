@@ -26,13 +26,13 @@ public class Tweet {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "tweet_id")
+    @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "tweet-tag", joinColumns = @JoinColumn(name = "tweet-id"),
-    inverseJoinColumns = @JoinColumn(name = "tag_id"))
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @JoinTable(name = "tweet-tag", joinColumns = @JoinColumn(name = "tweet-id"),
+//    inverseJoinColumns = @JoinColumn(name = "tag_id"))
 //    private List<Tag> tags;
 
     @NotEmpty(message = "Tweet cannot be empty")
