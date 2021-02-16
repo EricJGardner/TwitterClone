@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @Builder
@@ -28,6 +31,15 @@ public class User {
     private  String lastName;
     private int active;
 
-    @Column
+    @CreationTimestamp
     private Date createdAt;
+
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "role_id"))
+    //TODO(): Create role Class
+    private Set<Role> roles;
+
+
 }
