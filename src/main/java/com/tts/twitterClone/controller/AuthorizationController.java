@@ -21,15 +21,17 @@ public class AuthorizationController {
         this.userService = userService;
     }
 
-    @GetMapping("/signup")
+    @GetMapping(value="/signup")
     public  String registration(Model model) {
         User user = new User();
         model.addAttribute("user", user);
         return "registration";
     }
 
-    @PostMapping("/signup")
-    public String createNewUser(@Valid User user, BindingResult bindingResult, Model model) {
+    @PostMapping(value="/signup")
+    public String createNewUser(@Valid User user,
+                                BindingResult bindingResult,
+                                Model model) {
 
         User userExists = userService.findByUsername(user.getUsername());
 
@@ -45,6 +47,10 @@ public class AuthorizationController {
             model.addAttribute("user", new User());
         }
         return "registration";
+    }
+    @GetMapping(value="/login")
+    public String logIn(){
+        return "login";
     }
 
 }

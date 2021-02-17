@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <!--TODO() update to spring security 5 and modern bootstrap etc-->
 <head>
-    <meta charset="UTF-8">
-    <meta name ="viewport" content="width=device-width, initial-scale=1.0">
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name ="viewport" content="width=device-width, initial-scale=1.0">-->
     <title>Log in</title>
 <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
 <!--    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">-->
@@ -12,9 +12,12 @@
 <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
 <!--    <script src="/custom.js"></script>-->
     <div th:replace="fragments/styles::head-styles"></div>
+    <div th:replace="fragments/navbar :: navbar" ></div>
 </head>
 <body>
 <div class="container">
+
+
     <h2>Welcome!</h2>
     <form th:action="@{/login}" method="post"><br/>
         <input type="text" id="username" name="username" th:placeholder="Username" class="form-control"/> <br/>
@@ -23,6 +26,9 @@
             <h4 style="color: red">Login unsuccessful.</h4>
         </div>
         <button class="btn btn-md btn-success btn-block" name="Submit" value="Login" type="Submit">Log in</button>
+    </form>
+    <form th:action="@{/signup}" method="post"><br/>
+        <button class="btn btn-md btn-success btn-block" name="Submit" value="Submit" type="Submit">Sign up</button>
     </form>
 </div>
 </body>
