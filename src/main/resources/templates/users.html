@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head>
-    <title>USERS</title>
+    <title id="title">Users</title>
 
     <div th:replace="/fragments/styles :: head-style" ></div>
 </head>
@@ -36,14 +36,16 @@
 <!--try this body instead of above-->
 <body>
 <div class="container-fluid">
-    <div th:replace="fragments/navbar :: navbar"></div>
+<!--    <div th:replace="fragments/navbar :: navbar"></div>-->
+    <div th:replace="fragments/navbar"></div>
     <div class="container">
         <h2>Users</h2>
         <div class="list-group" th:each="user:${users}">
             <a th:href="@{/users/} + ${user.username}" class="list-group-item list-group-item-action">
                 <div class="row">
                     <div class="col col-sm-6">
-                        <h5 class="mb-1" style="color: #00aced"><i class="fab fa-twitter"></i> @<span th:text="${user.username}"></span></h5>
+                        <h5 class="mb-1" style="color: #00aced"><i class="fab fa-twitter"></i>
+                            @<span th:text="${user.username}"></span></h5>
                         <h5 class="mb-1"><span th:text="${user.firstName}"></span> <span th:text="${user.lastName}"></span>
                             <span th:if="${!followingStatus.containsKey(user.username)}">(Me)</span></h5></h5>
                     </div>

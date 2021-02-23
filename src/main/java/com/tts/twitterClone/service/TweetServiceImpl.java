@@ -18,21 +18,23 @@ import java.util.regex.Pattern;
 @Service
 public class TweetServiceImpl implements TweetService{
 
-   @Autowired
+
     private TweetRepository tweetRepository;
 
-    @Autowired
+
     private TagRepository tagRepository;
 
-   public TweetServiceImpl(TweetRepository tweetRepository){
+   @Autowired
+    public TweetServiceImpl(TweetRepository tweetRepository, TagRepository tagRepository){
        this.tweetRepository = tweetRepository;
+       this.tagRepository = tagRepository;
    }
 
     @Override
     public List<Tweet> findAll() {
-        return formatTweets(tweetRepository.findAllByOrderByCreatedAtDesc());
-//       List<Tweet> tweets =tweetRepository.findAllByOrderByCreatedAtDesc();
-//       return tweets;
+//        return formatTweets(tweetRepository.findAllByOrderByCreatedAtDesc());
+       List<Tweet> tweets =tweetRepository.findAllByOrderByCreatedAtDesc();
+       return formatTweets(tweets);
 //        return tweetRepository.findAllByOrderByCreatedAtDesc();
     }
 
@@ -56,8 +58,10 @@ public class TweetServiceImpl implements TweetService{
 
     @Override
     public List<Tweet> findAllWithTag(String tag) {
-        return formatTweets(tweetRepository.findByTags_PhraseOrderByCreatedAtDesc(tag));
-    }
+//        return formatTweets(tweetRepository.findByTags_PhraseOrderByCreatedAtDesc(tag));
+        List<Tweet> tweets = tweetRepository.findByTags_PhraseOrderByCreatedAtDesc(tag);
+        return formatTweets(tweets);
+   }
 
     @Override
     public void handleTags(Tweet tweet) {

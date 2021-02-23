@@ -10,52 +10,96 @@
 </head>
 
 <body>
-<div class="container">
-    <div th:replace="fragments/navbar :: navbar" ></div>
+<div class="container-fluid">
+    <div th:replace="fragments/navbar"></div>
 
-    <!-- User profile page begins -->
-    <h2>Profile for <span th:text="${user.firstName}"></span>
-        <span th:text="${user.lastName}"></span> -
-        <span style="color: #00aced"> @
-                <span th:text="${user.username}"></span>
-            </span>
-    </h2>
+    <div class="container">
+        <h2>
+            Profile for<span th:text="${user.firstName}"></span>
+            <span th:text="${user.lastName}"></span> -
+            <span style="color: #00aced">
+        @<span th:text="${user.username}"></span>
+    </span>
+        </h2>
 
-    <h5>Joined <span th:text="${#dates.format(user.createdAt, 'MMMM dd, yyyy')}"></span>
-    </h5>
+        <h5>
+            Joined <span th:text="${#dates.format(user.createdAt, 'MMMM dd, yyyy')}"></span>
+        </h5>
 
-    <h3>Tweets</h3>
-    <div class="list-group" th:each="tweet:${tweetList}">
-        <div class="list-group-item list-group-item-action">
-            <div class="d-flex w-100 justify-content-between">
-                <h5>@<span th:text="${tweet.user.username}"></span>
-                    <smal><span th:text="${#dates.format(tweet.createdAt, 'M/d/yy')}"></small></h5>
-            </div>
-            <p class="mb-1" th:utext="${tweet.message}"></p>
-        </div>
-    </div>
+        <span th:if="${!isSelfPage}">
 
-    <!--    Not sure where to put this slide17    -->
-    <div th:if="${not #lists.isEmpty(tweetList)}">
-        <h3>Tweets</h3>
-    </div>
-    <div th:if="${#lists.isEmpty(tweetList)}">
-        <h3>No Recent Tweets</h3>
-    </div>
-
-    <!--
-    follow/unfollow functionality will be utilized by pressing a button,
-    which lives inside a form and makes a POST request to one of the two
-    endpoints
-    -->
     <form th:action="@{/follow/} + ${user.username}" th:if="${!following}" method="post">
         <button style="float:right" type="Submit" class="btn btn-lg btn-success">Follow</button>
     </form>
     <form th:action="@{/unfollow/} + ${user.username}" th:if="${following}" method="post">
         <button style="float:right" type="Submit" class="btn btn-lg btn-primary unfollow_btn">Following</button>
     </form>
-
+</span>
+        <div th:if="${not #lists.isEmpty(tweetList)}">
+            <h3>Tweets</h3>
+            <div class="list-group" th:each="tweet:${tweetList}">
+                <div class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5>@<span th:text="${tweet.user.username}"></span>
+                            <small><span th:text="${#dates.format(tweet.createdAt, 'M/d/yy')}"></span></small></h5>
+                    </div>
+                    <p class="mb-1" th:utext="${tweet.message}"></p>
+                </div>
+            </div>
+        </div>
+        <div th:if="${#lists.isEmpty(tweetList)}">
+            <h3>No recent tweets</h3>
+        </div>
+    </div>
 </div>
+
+<!--<div class="container">-->
+<!--    <div th:replace="fragments/navbar" ></div>-->
+
+<!--    &lt;!&ndash; User profile page begins &ndash;&gt;-->
+<!--    <h2>Profile for-->
+<!--        <span th:text="${user.firstName}"></span>-->
+<!--        <span th:text="${user.lastName}"></span> - -->
+<!--        <span style="color: #00aced"> @-->
+<!--                <span th:text="${user.username}"></span>-->
+<!--            </span>-->
+<!--    </h2>-->
+
+<!--    <h5>Joined <span th:text="${#dates.format(user.createdAt, 'MMMM dd, yyyy')}"></span>-->
+<!--    </h5>-->
+
+<!--    <h3>Tweets</h3>-->
+<!--    <div class="list-group" th:each="tweet:${tweetList}">-->
+<!--        <div class="list-group-item list-group-item-action">-->
+<!--            <div class="d-flex w-100 justify-content-between">-->
+<!--                <h5>@<span th:text="${tweet.user.username}"></span>-->
+<!--                    <small><span th:text="${#dates.format(tweet.createdAt, 'M/d/yy')}"></span></small></h5>-->
+<!--            </div>-->
+<!--            <p class="mb-1" th:utext="${tweet.message}"></p>-->
+<!--        </div>-->
+<!--    </div>-->
+
+
+<!--    <div th:if="${not #lists.isEmpty(tweetList)}">-->
+<!--        <h3>Tweets</h3>-->
+<!--    </div>-->
+<!--    <div th:if="${#lists.isEmpty(tweetList)}">-->
+<!--        <h3>No Recent Tweets</h3>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash;-->
+<!--    follow/unfollow functionality will be utilized by pressing a button,-->
+<!--    which lives inside a form and makes a POST request to one of the two-->
+<!--    endpoints-->
+<!--    &ndash;&gt;-->
+<!--    <form th:action="@{/follow/} + ${user.username}" th:if="${!following}" method="post">-->
+<!--        <button style="float:right" type="Submit" class="btn btn-lg btn-success">Follow</button>-->
+<!--    </form>-->
+<!--    <form th:action="@{/unfollow/} + ${user.username}" th:if="${following}" method="post">-->
+<!--        <button style="float:right" type="Submit" class="btn btn-lg btn-primary unfollow_btn">Following</button>-->
+<!--    </form>-->
+
+<!--</div>-->
 
 <!--<div th:replace="/fragments/styling :: body-links" ></div>-->
 </body>
