@@ -2,66 +2,68 @@ package com.tts.twitterClone.service;
 
 import com.tts.twitterClone.model.Tag;
 import com.tts.twitterClone.model.Tweet;
+import com.tts.twitterClone.model.TweetDisplay;
 import com.tts.twitterClone.model.User;
 import com.tts.twitterClone.repository.TagRepository;
 import com.tts.twitterClone.repository.TweetRepository;
+import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
 public class TweetServiceImpl implements TweetService{
 
-
     private TweetRepository tweetRepository;
-
-
     private TagRepository tagRepository;
 
-   @Autowired
-    public TweetServiceImpl(TweetRepository tweetRepository, TagRepository tagRepository){
-       this.tweetRepository = tweetRepository;
-       this.tagRepository = tagRepository;
-   }
-
-    @Override
-    public List<Tweet> findAll() {
-//        return formatTweets(tweetRepository.findAllByOrderByCreatedAtDesc());
-       List<Tweet> tweets =tweetRepository.findAllByOrderByCreatedAtDesc();
-       return formatTweets(tweets);
-//        return tweetRepository.findAllByOrderByCreatedAtDesc();
-    }
-
-    private List<Tweet> formatTweets(List<Tweet> tweets) {
-        addTagLinks(tweets);
-        shortenLinks(tweets);
-        return tweets;
+    @Autowired
+    public TweetServiceImpl(TweetRepository tweetRepository, TagRepository tagRepository) {
+        this.tweetRepository = tweetRepository;
+        this.tagRepository = tagRepository;
     }
 
     @Override
-    public List<Tweet> findAllByUser(User user) {
+    public List<TweetDisplay> findAll() {
+        List<Tweet> tweets = tweetRepository.findAllByOrderByCreatedAtDesc();
+        return formatTweets(tweets);
+    }
+
+    @Override
+    public List<TweetDisplay> findAllByUser(User user) {
         List<Tweet> tweets = tweetRepository.findAllByUserOrderByCreatedAtDesc(user);
-        return tweets;
+        return formatTweets(tweets);
     }
 
     @Override
-    public List<Tweet> findAllByUsers(List<User> users) {
+    public List<TweetDisplay> findAllByUsers(List<User> users) {
         List<Tweet> tweets = tweetRepository.findAllByUserInOrderByCreatedAtDesc(users);
-        return tweets;
+        return formatTweets(tweets);
     }
 
     @Override
-    public List<Tweet> findAllWithTag(String tag) {
-//        return formatTweets(tweetRepository.findByTags_PhraseOrderByCreatedAtDesc(tag));
+    public void save(Tweet tweet) {
+        handleTags(tweet);
+        tweetRepository.save(tweet);
+    }
+
+    // optional method, does not need to be implemented
+    // mostly here for testing
+    @Override
+    public Optional<Tweet> findById(Long id) {
+        return tweetRepository.findById(id);
+    }
+
+    @Override
+    public List<TweetDisplay> findAllWithTag(String tag) {
         List<Tweet> tweets = tweetRepository.findByTags_PhraseOrderByCreatedAtDesc(tag);
         return formatTweets(tweets);
-   }
+    }
 
     @Override
     public void handleTags(Tweet tweet) {
@@ -79,15 +81,19 @@ public class TweetServiceImpl implements TweetService{
             tags.add(tag);
         }
         tweet.setTags(tags);
+
     }
 
     @Override
-    public void save(Tweet tweet) {
-        handleTags(tweet);
-        tweetRepository.save(tweet);
+    public List<TweetDisplay> formatTweets(List<Tweet> tweets) {
+        addTagLinks(tweets);
+        shortenLinks(tweets);
+        List<TweetDisplay> displayTweets = formatTimestamps(tweets);
+        return displayTweets;
     }
 
-    private void addTagLinks(List<Tweet> tweets) {
+    @Override
+    public void addTagLinks(List<Tweet> tweets) {
         Pattern pattern = Pattern.compile("#\\w+");
         for (Tweet tweet : tweets) {
             String message = tweet.getMessage();
@@ -104,7 +110,9 @@ public class TweetServiceImpl implements TweetService{
         }
     }
 
-    private void shortenLinks(List<Tweet> tweets) {
+    @Override
+    public void shortenLinks(List<Tweet> tweets) {
+
         Pattern pattern = Pattern.compile("https?[^ ]+");
         for (Tweet tweet : tweets) {
             String message = tweet.getMessage();
@@ -121,5 +129,32 @@ public class TweetServiceImpl implements TweetService{
             }
 
         }
+
     }
+
+    @Override
+    public List<TweetDisplay> formatTimestamps(List<Tweet> tweets) {
+        List<TweetDisplay> response = new ArrayList<>();
+        PrettyTime prettyTime = new PrettyTime();
+        SimpleDateFormat simpleDate = new SimpleDateFormat("M/d/yy");
+        Date now = new Date();
+
+        for (Tweet tweet: tweets) {
+            TweetDisplay tweetDisplay = new TweetDisplay();
+            tweetDisplay.setUser(tweet.getUser());
+            tweetDisplay.setMessage(tweet.getMessage());
+            tweetDisplay.setTags(tweet.getTags());
+            // Math.abs return the absolute value of the given argument
+            long diffinMillies = Math.abs(now.getTime() - tweet.getCreatedAt().getTime());
+            long diff = TimeUnit.DAYS.convert(diffinMillies, TimeUnit.MILLISECONDS);
+            if (diff > 3) {
+                tweetDisplay.setDate(simpleDate.format(tweet.getCreatedAt()));
+            } else {
+                tweetDisplay.setDate(prettyTime.format(tweet.getCreatedAt()));
+            }
+            response.add(tweetDisplay);
+        }
+        return response;
+    }
+
 }

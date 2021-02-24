@@ -1,39 +1,39 @@
-<!DOCTYPE html>
 
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head>
-    <title id="title">Tagged Tweets Feed</title>
-
-    <div th:replace="/fragments/styles :: head-styles" ></div>
+    <title>Registration</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+    <link rel="stylesheet" href="/custom.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/custom.js"></script>
 </head>
 
 <body>
 
-<div th:replace="fragments/navbar :: navbar"></div>
-
 <div class="container">
-    <h2>Tweets containing #<span th:text="${tag}"></span></h2>
-    <div class="list-group" th:each="tweet:${tweetList}">
-        <div class="list-group-item list-group-item-action">
-            <div class="d-flex w-100 justify-content-between">
-                <a class="username" th:href="@{/users/} + ${tweet.user.username}">@<span th:text="${tweet.user.username}"></span></a><small> <span th:text="${#dates.format(tweet.createdAt, 'M/d/yy')}"></span></small>
+
+    <div th:replace="fragments/navbar"></div>
+    <div class="container">
+        <h2>Tweets containing #<span th:text="${tag}"></span></h2>
+        <div class="list-group" th:each="tweet:${tweetList}">
+            <div class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <a class="username" th:href="@{/users/} + ${tweet.user.username}">@<span
+                            th:text="${tweet.user.username}"></span></a><small> <span
+                        th:text="${tweet.date}"></span></small>
+                </div>
+                <p class="mb-1" th:utext="${tweet.message}"></p>
             </div>
-            <p class="mb-1" th:utext="${tweet.message}"></p>
         </div>
-    </div>
-    <!--
-    Just in case a user manually types in a URL and views the page for which
-    no tweets exist, we added the following code so the user can see the
-    appropriate message
-    -->
-    <div th:if="${#lists.isEmpty(tweetList)}">
-        <h3>No tweets contain this hashtag</h3>
+        <div th:if="${#lists.isEmpty(tweetList)}">
+            <h3>No tweets contain this hashtag</h3>
+        </div>
     </div>
 </div>
 
-<!--<div th:replace="/fragments/styling :: body-links" ></div>-->
 </body>
-
 </html>
